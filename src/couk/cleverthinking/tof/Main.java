@@ -1,5 +1,7 @@
 package couk.cleverthinking.tof;
 
+
+// dependedencies downloaded from https://developers.google.com/resources/api-libraries/download/drive/v2/java/
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.AbstractInputStreamContent;
@@ -28,37 +30,52 @@ public class Main {
     // copy paste from API Console
     private static final String SERVICE_ACCOUNT_EMAIL_ADDRESS = "498909596280-hg2d77klsgjm5g7dall0mno71gmtfr2b@developer.gserviceaccount.com";
 
+    private static JsonFactory JSON_FACTORY;
+    private static HttpTransport HTTP_TRANSPORT;
+
     public static void main(String[] args) throws GeneralSecurityException, IOException {
 
 
         enableLogging();
 
 
-        JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-        HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        JSON_FACTORY = JacksonFactory.getDefaultInstance();
+        HTTP_TRANSPORT  = GoogleNetHttpTransport.newTrustedTransport();
 
-        GoogleCredential credential = new GoogleCredential.Builder()
-                .setTransport(httpTransport)
+        GoogleCredential credentialServiceAccount = new GoogleCredential.Builder()
+                .setTransport(HTTP_TRANSPORT)
                 .setJsonFactory(JSON_FACTORY)
                 .setServiceAccountId(SERVICE_ACCOUNT_EMAIL_ADDRESS)
                 .setServiceAccountPrivateKeyFromP12File(new java.io.File(DEFAULT_P12_FILENAME))
                 .setServiceAccountScopes(Collections.singleton(SCOPE))
                 .build();
 
+        GoogleCredential credentialUser = new GoogleCredential.Builder()
+                .setTransport(HTTP_TRANSPORT)
+                .setJsonFactory(JSON_FACTORY)
+                .setServiceAccountId(SERVICE_ACCOUNT_EMAIL_ADDRESS)
+                .setServiceAccountPrivateKeyFromP12File(new java.io.File(DEFAULT_P12_FILENAME))
+                .setServiceAccountScopes(Collections.singleton(SCOPE))
+                .setServiceAccountUser("roy.smith@primetext.com")
+                .build();
+
         System.out.println("hw");
-        Drive service = new Drive.Builder(httpTransport, JSON_FACTORY, null)
-                .setHttpRequestInitializer(credential).build();
-        About a = service.about().get().execute();
+        Drive serviceServiceAccount = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+                .setHttpRequestInitializer(credentialServiceAccount).build();
+        Drive serviceUser = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+                .setHttpRequestInitializer(credentialUser).build();
+        About a = serviceUser.about().get().execute();
         File body = new File();
-        body.setTitle("t");
+        body.setTitle("ttt");
         body.setMimeType("text/plain");
 
         AbstractInputStreamContent b;
-        File file = service.files().insert(body, new ByteArrayContent(null, "foo".getBytes())).execute();
+        File file1 = serviceServiceAccount.files().insert(body, new ByteArrayContent(null, "foo".getBytes())).execute();
+        File file2 = serviceUser.files().insert(body, new ByteArrayContent(null, "foo".getBytes())).execute();
 
 
         System.out.println(a.getKind());
-        System.out.println(file.getId());
+        System.out.println(file2.getId());
     }
 
     /**
