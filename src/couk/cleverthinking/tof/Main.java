@@ -3,6 +3,9 @@ package couk.cleverthinking.tof;
 
 // dependedencies downloaded from https://developers.google.com/resources/api-libraries/download/drive/v2/java/
 
+// export CLASSPATH=out/production/tof:libs/gson-2.1.jar:libs/google-api-client-1.20.0.jar:libs/google-http-client-1.20.0.jar:libs/google-api-client-gson-1.20.0.jar:libs/jackson-core-2.1.3.jar:libs/jackson-core-asl-1.9.11.jar:libs/google-http-client-jackson-1.20.0.jar:libs/google-http-client-jackson2-1.20.0.jar:libs/google-api-services-drive-v2-rev179-1.20.0.jar:libs/google-oauth-client-1.20.0.jar
+
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -41,8 +44,8 @@ public class Main {
 
 
     public static void main(String[] args) throws GeneralSecurityException, IOException {
-        processArgs(args);                                                                                              // deal with command line args
-//        enableLogging();                                                                                              // log http traffic
+//        NB Command line args not yet implemented
+//        processArgs(args);                                                                                            // deal with command line args
 
         oauthInit();                                                                                                    // setup OAuth base variables
 
@@ -55,6 +58,10 @@ public class Main {
             return;
         }
 
+        if (config.debug) {
+            enableLogging();                                                                                            // log http traffic
+        }
+
 
         for (DomainConfig domainConfig : config.domains) {                                                              // for each domain in the config file
             l("[M60] Processing domain " + domainConfig.domainName + " ...");
@@ -63,7 +70,7 @@ public class Main {
                 processDomain(domainConfig);                                                                            // process it
             } catch (Exception e) {
                 e.printStackTrace();
-                l("   [M64] Exception '" + e + "' while processing domain " + domainConfig.domainName + " . Continuing with next domain");
+                l("   [M64] Error '" + e + "' while processing domain " + domainConfig.domainName + " . Continuing with next domain");
             }
             indentLevel--;
         }
@@ -78,7 +85,7 @@ public class Main {
      * @param args the args from the command line
      */
     private static void processArgs(String[] args) {
-        // TODO args
+        // TODO not yet implemented
     }
 
 
@@ -91,7 +98,7 @@ public class Main {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         } catch (Exception e) {
             e.printStackTrace();
-            l("[M57] Fatal error. Could not create HTTP Transport " + e);
+            l("[M57] Fatal Error. Could not create HTTP Transport " + e);
         }
     }
 
@@ -116,7 +123,7 @@ public class Main {
         try {                                                                                                           // check we can access the TOFS ALL folder, ie it exists and we have permission
             driveserviceServiceAccount.files().get(domainConfig.tofsFolderId).execute();
         } catch (IOException e) {
-            throw new IllegalStateException("[M116] Could not access 'ALL TOFS' folder " + e);
+            throw new IllegalStateException("[M116] Error. Could not access 'ALL TOFS' folder " + e);
         }
 
 
@@ -171,7 +178,7 @@ public class Main {
                 buildDriveService(domainConfig.serviceAccountEmail, domainConfig.targetOwner, convertDomainName2p12Filename(domainConfig.domainName))
                         .permissions().patch(childFile.getId(), childFile.getOwners().get(0).getPermissionId(), writerPermission).execute();
             } catch (Exception e) {
-                l("[M160] Error: Could not delete old owner permission " + e);
+                l("[M160] Error: Could not delete old owner permission " + e+ ". This might be because this isn't a Google Docs type file.");
             }
         }
 
@@ -212,6 +219,7 @@ public class Main {
      * @throws FileNotFoundException
      */
     private static Config loadConfigurationFile(String filename) throws FileNotFoundException {
+        l("[M216] reading "+filename);
         java.io.File f = new java.io.File(filename);
         InputStream is = new FileInputStream(f);
         final Gson gson = new Gson();
@@ -247,10 +255,10 @@ public class Main {
         try {
             f = new java.io.File(p12Filename);
         } catch (Exception e) {
-            throw new IllegalAccessError("[M226] Could not read p12 key file '" + p12Filename + "' " + e);
+            throw new IllegalAccessError("[M226] Error: Could not read p12 key file '" + p12Filename + "' " + e);
         }
         if (!f.canRead()) {
-            throw new IllegalAccessError("[M229] Could not read p12 key file '" + p12Filename + "'");
+            throw new IllegalAccessError("[M229] Error: Could not read p12 key file '" + p12Filename + "'");
         }
 
         GoogleCredential.Builder builder = new GoogleCredential.Builder()
@@ -310,6 +318,7 @@ public class Main {
      * The object that corresponds to the JSON config file tof.cfg
      */
     private static class Config {
+        boolean debug;
         DomainConfig[] domains;
     }
 
