@@ -47,6 +47,8 @@ public class Main {
 //        NB Command line args not yet implemented
 //        processArgs(args);                                                                                            // deal with command line args
 
+        l("[M50] TOF Version 0.9.0");
+
         oauthInit();                                                                                                    // setup OAuth base variables
 
         Config config;
