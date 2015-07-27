@@ -1,7 +1,7 @@
 # tof
 Transfer Ownership Folder - Auto transfer ownership from author to service account
 
-
+see http://www.riskcompletefailure.com/2015/03/understanding-service-accounts.html
 
 api console, make project
 domain admin, add to authorised clients security/more ????
