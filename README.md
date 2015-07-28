@@ -1,5 +1,5 @@
 # tof
-Transfer Ownership Folder - Auto transfer ownership from author to service account
+Transfer Ownership Folder - Auto transfer ownership from author to a designated account which could be a service account or a regular account
 
 This Java app handles the automatic transfer of ownership of designated files from a human user account to an admin/archive account. 
 It will do this for multiple domains in a single invocation, based on the configuration file. Users designate files for TOF, by placing their parent folder under 
@@ -40,7 +40,7 @@ doing once per domain. All steps should be performed while logged in as an admin
   1. Go to drive.google.com
   1. Check that you are the admin user and in the correct Drive domain
   1. Create the ALLTOFS folder. You can call it anything, but go into it so you can note the folder ID from the URL [3] (you can also change its colour if you wish, by right clicking)
-  1. Change the persmissions of ALLTOFS so it is writeable by all members of the domain. (You could only make it writeable by individual project mamnagers - your choice)
+  1. Change the permissions of ALLTOFS so it is writeable by all members of the domain. (You could only make it writeable by individual project managers - your choice)
   1. Also Share it with the Service Account Email from [1]
   
   That's all the Google config done. What you've done is basically create a Service Account and delegate domain wide authority to that Service Account. 

@@ -1,11 +1,31 @@
+/**
+ *
+ * Copyright © 2015 CleverThinking Ltd
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ */
+
 package couk.cleverthinking.tof;
 
-
-// dependedencies downloaded from https://developers.google.com/resources/api-libraries/download/drive/v2/java/
+// dependencies downloaded from https://developers.google.com/resources/api-libraries/download/drive/v2/java/
 
 // export CLASSPATH=out/production/tof:libs/gson-2.1.jar:libs/google-api-client-1.20.0.jar:libs/google-http-client-1.20.0.jar:libs/google-api-client-gson-1.20.0.jar:libs/jackson-core-2.1.3.jar:libs/jackson-core-asl-1.9.11.jar:libs/google-http-client-jackson-1.20.0.jar:libs/google-http-client-jackson2-1.20.0.jar:libs/google-api-services-drive-v2-rev179-1.20.0.jar:libs/google-oauth-client-1.20.0.jar
-
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
@@ -47,7 +67,7 @@ public class Main {
 //        NB Command line args not yet implemented
 //        processArgs(args);                                                                                            // deal with command line args
 
-        l("[M50] TOF Version 0.9.0");
+        l("[M50] TOF Version 0.9.1");
 
         oauthInit();                                                                                                    // setup OAuth base variables
 
@@ -113,7 +133,6 @@ public class Main {
      * @throws GeneralSecurityException
      */
     private static void processDomain(DomainConfig domainConfig) throws IOException, GeneralSecurityException {
-        l("[M114] Authorising Drive Service for the Service Account ...");
         // build a drive service for the service account user for this domain
         Drive driveserviceServiceAccount = buildDriveService(domainConfig.serviceAccountEmail, "ServiceAccount", convertDomainName2p12Filename(domainConfig.domainName));
 
@@ -246,18 +265,18 @@ public class Main {
      * @throws IOException
      */
     public static Drive buildDriveService(String serviceAccountEmailAddress, String impersonatedAccountEmailAddress, String p12Filename) throws GeneralSecurityException, IOException {
-        // simple service account build
 
         // if a drrive service for the specified email has already been built and cached, return it
         if (cachedDriveservices.containsKey(impersonatedAccountEmailAddress)) {
             return cachedDriveservices.get(impersonatedAccountEmailAddress);
         }
+        l("[M273] Authorising Drive Service for "+impersonatedAccountEmailAddress+" ...");
 
         java.io.File f;
         try {
             f = new java.io.File(p12Filename);
         } catch (Exception e) {
-            throw new IllegalAccessError("[M226] Error: Could not read p12 key file '" + p12Filename + "' " + e);
+            throw new IllegalAccessError("[M226] Error: Exception reading p12 key file '" + p12Filename + "' " + e);
         }
         if (!f.canRead()) {
             throw new IllegalAccessError("[M229] Error: Could not read p12 key file '" + p12Filename + "'");
