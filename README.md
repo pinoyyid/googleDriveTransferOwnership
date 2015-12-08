@@ -104,11 +104,4 @@ If you encounter any problems, please edit tof.cfg and set debug:true. Then run 
 
 As we discussed on email, the above procedure changes ownership but leaves the original users with Write access. This allows them to delete files and folders. 
   The files will not be deleted, but they will be removed from their parent folder.
-  
-As I mentioned in one of my early emails, there is a bug in Drive that it is only possible to change the ownership of Google files. If you see
-   
-     [M154] Error: Could not add new owner permission com.google.api.client.googleapis.json.GoogleJsonResponseException: 400 Bad Request
-     
-     "message" : "Bad Request. User message: \"You can't yet change the owner of this item. (We're working on it.)\"",
-
-then that's what happened. They've been working on it for years. This post on Google Plus refers https://plus.google.com/+RoySmith/posts/1LaTMRBtbsk.
+ 
