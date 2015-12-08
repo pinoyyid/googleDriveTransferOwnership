@@ -99,9 +99,3 @@ The output should look something like this ..,
 
 
 If you encounter any problems, please edit tof.cfg and set debug:true. Then run again and email me the log output.
-
-##The gotchas
-
-As we discussed on email, the above procedure changes ownership but leaves the original users with Write access. This allows them to delete files and folders. 
-  The files will not be deleted, but they will be removed from their parent folder.
- 
