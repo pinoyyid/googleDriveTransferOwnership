@@ -1,21 +1,22 @@
 # tof
 Transfer Ownership Folder - Auto transfer ownership from author to a designated account which could be a service account or a regular account
 
+The background is that many domain users created a scenario that individual domain users were creating shared files, which are permanently owned by the original creator. Domain administrators wants any such files to be owned by a central account. This could be a single central admin account for the domain, or there could be many such accounts, one for each project. 
 This Java app handles the automatic transfer of ownership of designated files from a human user account to an admin/archive account. 
 It will do this for multiple domains in a single invocation, based on the configuration file. Users designate files for TOF, by placing their parent folder under 
 a master folder, referred to as ALLTOFS. Nb. the ALLTOFS folder can actually have any name, as it is identified by its file ID within the config file, rather than by name.
 
-##Installation
+## Installation
   1. You must install a Jave Runtime Environment (JRE) from http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
   1. Unzip the distribution into a directory, called say TOF.
  
 
 
-##Configuration
+## Configuration
 For each domain that you wish to TOF, there are a few setup and configuration steps to be performed. This part is a bit fiddly, but only needs
 doing once per domain. All steps should be performed while logged in as an admin user of the domain.
 
-####Google stuff
+#### Google stuff
 
   1. Go to the Google API Console at https://console.developers.google.com/project
   
@@ -49,7 +50,7 @@ doing once per domain. All steps should be performed while logged in as an admin
   
   Next you need to configure all of this information into TOF.
 
-####TOF stuff
+#### TOF stuff
   
   1. Edit the tof.cfg file
   1. Replace "primetext.com" with your domain name
@@ -61,10 +62,10 @@ doing once per domain. All steps should be performed while logged in as an admin
 If you wish to run TOF against a second domain, repeat the Google stuff for the new domain. In the tof.cfg file, duplicate the four domain lines and paste in the appropriate values.
 
 
-##Running
+## Running
 
 I've provided a *nix shell script called tof.sh, which you can run. I'm not a Windows guy, but the windows equivalent should be pretty straightforward.
-from the TOF root directory, just run `tof.sh`
+from the TOF directory created by unzipping the archive, just run `tof.sh`. tof.cfg must also be in this directory.`
 
 The output should look something like this ..,
 
@@ -99,3 +100,16 @@ The output should look something like this ..,
 
 
 If you encounter any problems, please edit tof.cfg and set debug:true. Then run again and email me the log output.
+
+## The gotchas
+
+As we discussed on email, the above procedure changes ownership but leaves the original users with Write access. This allows them to delete files and folders. 
+  The files will not be deleted, but they will be removed from their parent folder.
+  
+As I mentioned in one of my early emails, there is a bug in Drive that it is only possible to change the ownership of Google files. If you see
+   
+     [M154] Error: Could not add new owner permission com.google.api.client.googleapis.json.GoogleJsonResponseException: 400 Bad Request
+     
+     "message" : "Bad Request. User message: \"You can't yet change the owner of this item. (We're working on it.)\"",
+
+then that's what happened. They've been working on it for years. This post on Google Plus refers https://plus.google.com/+RoySmith/posts/1LaTMRBtbsk.
